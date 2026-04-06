@@ -1,10 +1,10 @@
 import streamlit as st
-import pickle
+import joblib
 import json
 import os
 
-# Load model
-model = pickle.load(open("cyberbullying_model.pkl", "rb"))
+# Load model (FIXED)
+model = joblib.load("cyberbullying_model.pkl")
 
 st.set_page_config(page_title="AI Chat Moderation", layout="centered")
 
@@ -13,14 +13,17 @@ st.title("💬 AI Moderated Chat Platform")
 # File to store chat
 CHAT_FILE = "chat.json"
 
-# Load chat from file
+# Load chat safely (FIXED)
 def load_chat():
     if os.path.exists(CHAT_FILE):
-        with open(CHAT_FILE, "r") as f:
-            return json.load(f)
+        try:
+            with open(CHAT_FILE, "r") as f:
+                return json.load(f)
+        except:
+            return []
     return []
 
-# Save chat to file
+# Save chat
 def save_chat(chat):
     with open(CHAT_FILE, "w") as f:
         json.dump(chat, f)
